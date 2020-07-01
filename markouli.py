@@ -1,4 +1,39 @@
 import argparse
+import panflute
+
+class MarkdownLoader():
+    # this really is just a place to stuff markdown processing functions, honestly.
+    # I'm considering this self-documenting.
+    def fromFileToString(filepath):
+        ret = ""
+        
+        with open(filepath, "r") as file:
+            ret = file.read()
+            
+        return ret
+        
+    def fromStringToAST(sourceString):
+        # don't be a brain donor
+        # it's meant for markdown format strings
+        ret = None
+        
+        ret = panflute.convert_text(
+                                        sourceString,
+                                        input_format="markdown",
+                                        output_format="panflute",
+                                        standalone=True
+                                   )
+    
+        return ret
+    
+    def fromFileToAST(filepath):
+        ret = None
+       
+        swp = fromFileToString(filepath)
+        ret = fromStringToAST(swp)
+        
+        return ret
+        
 
 def main():
     # parse inputs
