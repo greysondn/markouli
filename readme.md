@@ -82,3 +82,5 @@ Including features that are highly unlikely to happen
   * [ ] Book extensions
   * [ ] Flag support
   * [ ] Multiblock support
+* [ ] Support for requested features
+  * [ ] Auto-Pagination support
