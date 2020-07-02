@@ -62,7 +62,7 @@ Including features that are highly unlikely to happen
 * [ ] Support for YAML instead of JSON in JSON files
   * [ ] book.json
   * [ ] category json files
-  * [ ] document front matter
+  * [ ] document front matter (`panflute.getOption()` ?)
   * [ ] page front matter
 * [ ] Split pages somehow in Markdown (Horizontal rules? Headers for pages with titles?)
 * [ ] Support for alternative page types
