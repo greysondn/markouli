@@ -1,4 +1,12 @@
-This text passes.
+Plaintext for days.
 
-this text  
-does not.
+Line  
+break.
+
+*Italics*
+
+**bold**
+
+***bold italics***
+
+**bold *bold italics* bold** *italics* - and also _italics_.

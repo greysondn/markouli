@@ -25,19 +25,19 @@ Including features that are highly unlikely to happen
 * [ ] Language Support
   * [X] Basic Text
   * [ ] All isomorphic tags
-    * [ ] `$(br)` (linebreak)
+    * [X] `$(br)` (linebreak)
     * [X] `$(br2)` (paragraph break)
     * [ ] `$(li)` (unordered list item)
       * [ ] `$(li2)` to some number (6?) - list item levels.
-    * [ ] `$(l)`  (bold)
+    * [X] `$(l)`  (bold)
     * [ ] `$(m)` (strikethrough)
-    * [ ] `$(o)` (italics)
+    * [X] `$(o)` (italics)
     * [ ] `$(l:...)...($/l)` (links)
     * [ ] `$(k:...)` (keyboard buttons, basically.)
   * [ ] Presumably span tags
     * [ ] `$(#RRGGBB)` - colors (span with style?)
     * [ ] `$(#RGB)`    - colors (span with style?)
-    * [ ] `$(#C)`      - pallete index colors (span with style?)
+    * [ ] `$(#C)`      - palette index colors (span with style?)
 	* [ ] `$(c:/command here)...(/c)` - commands (span with custom property?)
   * [ ] Custom/psudeo- tags.
     * [ ] `$(playername)` - Player's name (`<playername />`?)

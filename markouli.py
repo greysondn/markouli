@@ -51,8 +51,16 @@ class MarkdownASTTransfomer():
     def addText(self, text):
         self.parsed = self.parsed + text
     
+    def addStyles(self):
+        for text in self.style:
+            self.addText(text)
+    
     def notImplementedErrorHelper(self, fragment, blockName):
         # helps build and throw not implemented errors.
+        
+        # print what we have anyway. Help me with stepwise doing this.
+        print(self.parsed)
+        
         errorStr =  (
                         f"Not implemented!\n"
                         f"\n"
@@ -69,9 +77,8 @@ class MarkdownASTTransfomer():
         
         raise NotImplementedError(errorStr)
     
-    def transform(self, fragment, document):
+    def transform(self, fragment, document=None):
         # eventually, this would transform the AST into patchouli's format.
-        
         if type(fragment)   is panflute.BlockQuote:
             self.notImplementedErrorHelper(fragment, "BlockQuote")
         elif type(fragment) is panflute.BulletList:
@@ -94,10 +101,10 @@ class MarkdownASTTransfomer():
             self.notImplementedErrorHelper(fragment, "Div")
         elif type(fragment) is panflute.Doc:
             # for now, just a metatag so I know what's going on.
-            self.addText("\n")
-            self.addText("<EOF>")
+            self.tfDoc(fragment, document)
         elif type(fragment) is panflute.Emph:
-            self.notImplementedErrorHelper(fragment, "Emph")
+            # handled elsewhere
+            pass
         elif type(fragment) is panflute.Header:
             self.notImplementedErrorHelper(fragment, "Header")
         elif type(fragment) is panflute.HorizontalRule:
@@ -107,7 +114,8 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.LineBlock:
             self.notImplementedErrorHelper(fragment, "LineBlock")
         elif type(fragment) is panflute.LineBreak:
-            self.notImplementedErrorHelper(fragment, "LineBreak")
+            # handled elsewhere
+            pass
         elif type(fragment) is panflute.LineItem:
             self.notImplementedErrorHelper(fragment, "LineItem")
         elif type(fragment) is panflute.Link:
@@ -139,9 +147,7 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.OrderedList:
             self.notImplementedErrorHelper(fragment, "OrderedList")
         elif type(fragment) is panflute.Para:
-            self.addText("$(br2)")
-            self.addText("\n")
-            self.addText("\n")
+            self.tfParagraph(fragment, document)
         elif type(fragment) is panflute.Plain:
             self.notImplementedErrorHelper(fragment, "Plain")
         elif type(fragment) is panflute.Quoted:
@@ -155,15 +161,18 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.SoftBreak:
             self.notImplementedErrorHelper(fragment, "SoftBreak")
         elif type(fragment) is panflute.Space:
-            self.addText(" ")
+            # handled elsewhere
+            pass
         elif type(fragment) is panflute.Span:
             self.notImplementedErrorHelper(fragment, "Span")
         elif type(fragment) is panflute.Str:
-            self.addText(fragment.text)
+            # also handled elsewhere
+            pass
         elif type(fragment) is panflute.Strikeout:
             self.notImplementedErrorHelper(fragment, "StrikeOut")
         elif type(fragment) is panflute.Strong:
-            self.notImplementedErrorHelper(fragment, "Strong")
+            # also handled elsewhere
+            pass
         elif type(fragment) is panflute.Subscript:
             self.notImplementedErrorHelper(fragment, "SubScript")
         elif type(fragment) is panflute.Superscript:
@@ -176,6 +185,107 @@ class MarkdownASTTransfomer():
             self.notImplementedErrorHelper(fragment, "TableRow")
         else:
             self.notImplementedErrorHelper(fragment, "UNRECOGNIZED")
+            
+            
+    def tfDoc(self, fragment, document=None):
+        # internals
+        for child in fragment.content:
+            if type(child) == panflute.Para:
+                self.tfParagraph(fragment, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfParagraph()")
+    
+    def tfEmph(self, fragment, document=None):
+        # start italics
+        self.addText("$(o)")
+        
+        # and append to formats currently active
+        self.style.append("$(o)")
+        
+        # internals
+        for child in fragment.content:
+            if type(child) is panflute.Str:
+                self.tfString(child, document)
+            elif (type(child) == panflute.Strong):
+                self.tfStrong(child, document)
+            elif (type(child) == panflute.Space):
+                self.tfSpace(child, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfEmph()")
+                
+        # close style and remove from active styles
+        self.addText("$()")
+        self.style.pop()
+        
+        # add remaining styles
+        self.addStyles()
+    
+    def tfMetaMap(self, fragment, document=None):
+        pass
+        
+    def tfParagraph(self, fragment, document=None):
+    # I need to know if anything changes from start to end of this.
+        lenAtStart = len(self.parsed)
+    
+        # internals
+        for child in fragment.content:
+            if   (type(child) == panflute.Str):
+                self.tfString(child, document)
+            elif (type(child) == panflute.Emph):
+                self.tfEmph(child, document)
+            elif (type(child) == panflute.elements.Para):
+                # what?
+                pass
+            elif (type(child) == panflute.Space):
+                self.tfSpace(child, document)
+            elif (type(child) == panflute.Strong):
+                self.tfStrong(child, document)
+            elif (type(child) == panflute.LineBreak):
+                self.tfLineBreak(child, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfParagraph()")
+        
+        # only if we changed anything do we add more here)
+        if (len(self.parsed) != lenAtStart):
+            self.addText("$(br2)")
+            self.addText("\n")
+            self.addText("\n")
+    
+    def tfLineBreak(self, fragment, document=None):
+        self.addText("$(br)")
+        self.addText("\n")
+    
+    def tfSpace(self, fragment, document=None):
+        self.addText(" ")
+    
+    def tfString(self, fragment, document=None):
+        self.addText(fragment.text)
+        
+    def tfStrong(self, fragment, document=None):
+        # start italics
+        self.addText("$(l)")
+        
+        # and append to formats currently active
+        self.style.append("$(l)")
+        
+        # internals
+        for child in fragment.content:
+            if type(child) is panflute.Str:
+                self.tfString(child, document)
+            elif (type(child) == panflute.Emph):
+                self.tfEmph(child, document)
+            elif (type(child) == panflute.Space):
+                self.tfSpace(child, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfStrong()")
+                
+        # close style and remove from active styles
+        self.addText("$()")
+        self.style.pop()
+        
+        # add remaining styles
+        self.addStyles()
+        
 def main():
     # parse inputs
     parser  =   argparse.ArgumentParser(
