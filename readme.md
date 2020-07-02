@@ -30,7 +30,7 @@ Including features that are highly unlikely to happen
     * [ ] `$(li)` (unordered list item)
       * [ ] `$(li2)` to some number (6?) - list item levels.
     * [X] `$(l)`  (bold)
-    * [ ] `$(m)` (strikethrough)
+    * [X] `$(m)` (strikethrough
     * [X] `$(o)` (italics)
     * [ ] `$(l:...)...($/l)` (links)
     * [ ] `$(k:...)` (keyboard buttons, basically.)
@@ -46,16 +46,16 @@ Including features that are highly unlikely to happen
     * [ ] `$()` - clears formatting - `<clear />` or `<reset />` or even both?
   * [ ] Patchouli's macros
     * [ ] `$(obf)` --> `$(k)` via `<obf>...</obf>`?
-    * [ ] `$(bold)`
-    * [ ] `$(strike)`
-    * [ ] `$(italic)`
-    * [ ] `$(italics)`
+    * [X] `$(bold)`
+    * [X] `$(strike)`
+    * [X] `$(italic)`
+    * [X] `$(italics)`
     * [ ] `$(list)`
     * [ ] `$(reset)`
     * [ ] `$(clear)`
-    * [ ] `$(2br)` (but why though?)
-    * [ ] `$(p)` (again, but why though?)
-    * [ ] `<br>` - again, but why?
+    * [X] `$(2br)` (but why though?)
+    * [X] `$(p)` (again, but why though?)
+    * [X] `<br>` - again, but why?
     * [ ] `$(nocolor)` - resets color to palette 0.
     * [ ] `$(item)` - sets color to `#b0b`, `<item>...</item>`?
     * [ ] `$(thing)` - sets color to `#490`, `<thing>...</thing>`?

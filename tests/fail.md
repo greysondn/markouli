@@ -24,3 +24,15 @@ Well, at least people can't make me cry with weird combinations alone.
 But what happens if we interleave them?
 
 *italics and then **switch to bold and* undo italics before** undoing bold? ... according to CuteMarkEd anyway, it was never bold.
+
+Does __underline__ exist? Pandoc says no, sorry kids.
+
+Links exist! Three types...
+
+Internal entries: [display](entryid).
+
+Internal entries with anchors: [display](entryid#anchor).
+
+Web links: [display](https://github.com/greysondn/markouli).
+
+Images come later, naturally.

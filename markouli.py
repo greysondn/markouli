@@ -169,7 +169,8 @@ class MarkdownASTTransfomer():
             # also handled elsewhere
             pass
         elif type(fragment) is panflute.Strikeout:
-            self.notImplementedErrorHelper(fragment, "StrikeOut")
+            # also handled elsewhere
+            pass
         elif type(fragment) is panflute.Strong:
             # also handled elsewhere
             pass
@@ -210,6 +211,8 @@ class MarkdownASTTransfomer():
                 self.tfStrong(child, document)
             elif (type(child) == panflute.Space):
                 self.tfSpace(child, document)
+            elif (type(child) == panflute.Strikeout):
+                self.tfStrikeOut(child, document)
             else:
                 self.notImplementedErrorHelper(child, "tfEmph()")
                 
@@ -233,13 +236,15 @@ class MarkdownASTTransfomer():
                 self.tfString(child, document)
             elif (type(child) == panflute.Emph):
                 self.tfEmph(child, document)
-            elif (type(child) == panflute.elements.Para):
+            elif (type(child) == panflute.Para):
                 # what?
                 pass
             elif (type(child) == panflute.Space):
                 self.tfSpace(child, document)
             elif (type(child) == panflute.Strong):
                 self.tfStrong(child, document)
+            elif (type(child) == panflute.Strikeout):
+                self.tfStrikeOut(child, document)
             elif (type(child) == panflute.LineBreak):
                 self.tfLineBreak(child, document)
             else:
@@ -262,7 +267,7 @@ class MarkdownASTTransfomer():
         self.addText(fragment.text)
         
     def tfStrong(self, fragment, document=None):
-        # start italics
+        # start bold
         self.addText("$(l)")
         
         # and append to formats currently active
@@ -276,8 +281,37 @@ class MarkdownASTTransfomer():
                 self.tfEmph(child, document)
             elif (type(child) == panflute.Space):
                 self.tfSpace(child, document)
+            elif (type(child) == panflute.Strikeout):
+                self.tfStrikeOut(child, document)
             else:
                 self.notImplementedErrorHelper(child, "tfStrong()")
+                
+        # close style and remove from active styles
+        self.addText("$()")
+        self.style.pop()
+        
+        # add remaining styles
+        self.addStyles()
+        
+    def tfStrikeOut(self, fragment, document=None):
+        # start strikeout
+        self.addText("$(m)")
+        
+        # and append to formats currently active
+        self.style.append("$(m)")
+        
+        # internals
+        for child in fragment.content:
+            if type(child) is panflute.Str:
+                self.tfString(child, document)
+            elif (type(child) == panflute.Emph):
+                self.tfEmph(child, document)
+            elif (type(child) == panflute.Strong):
+                self.tfStrong(child, document)
+            elif (type(child) == panflute.Space):
+                self.tfSpace(child, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfStrikeout()")
                 
         # close style and remove from active styles
         self.addText("$()")
