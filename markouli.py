@@ -36,8 +36,20 @@ class MarkdownLoader():
         
 class MarkdownASTTransfomer():
     # it looks more complicated than it really is. Promise.
+    def __init__(self):
+        # where to store parsed symbols from the walker.
+        self.parsed = ""
+        
+        # where to store the current patchouli style data.
+        # We care when we push and pop, mostly.
+        self.style = []
+    
     def perform(self, ast):
         ast.walk(self.transform)
+        return self.parsed
+    
+    def addText(self, text):
+        self.parsed = self.parsed + text
     
     def notImplementedErrorHelper(self, fragment, blockName):
         # helps build and throw not implemented errors.
@@ -51,16 +63,14 @@ class MarkdownASTTransfomer():
                         f"{blockName} : {type(fragment)}\n"
                         f"\n"
                         f"Fragment:\n"
-                        f"{fragment}\n"
+                        f"{panflute.stringify(fragment)}\n"
                         f"\n"
                     )
         
         raise NotImplementedError(errorStr)
     
-    def transform(self, fragment, currentFormat=""):
+    def transform(self, fragment, document):
         # eventually, this would transform the AST into patchouli's format.
-        # keeping it piecewise in ret, presumably.
-        ret = ""
         
         if type(fragment)   is panflute.BlockQuote:
             self.notImplementedErrorHelper(fragment, "BlockQuote")
@@ -82,6 +92,10 @@ class MarkdownASTTransfomer():
             self.notImplementedErrorHelper(fragment, "DefinitionList")
         elif type(fragment) is panflute.Div:
             self.notImplementedErrorHelper(fragment, "Div")
+        elif type(fragment) is panflute.Doc:
+            # for now, just a metatag so I know what's going on.
+            self.addText("\n")
+            self.addText("<EOF>")
         elif type(fragment) is panflute.Emph:
             self.notImplementedErrorHelper(fragment, "Emph")
         elif type(fragment) is panflute.Header:
@@ -111,7 +125,11 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.MetaList:
             self.notImplementedErrorHelper(fragment, "MetaList")
         elif type(fragment) is panflute.MetaMap:
-            self.notImplementedErrorHelper(fragment, "MetaMap")
+            # it's apparently empty? I'mma print the darn thing
+            # with an assert.
+            testable = panflute.stringify(fragment)
+            if (testable != ""):
+                self.notimplementedErrorHelper(fragment, "MetaMap")
         elif type(fragment) is panflute.MetaString:
             self.notImplementedErrorHelper(fragment, "MetaString")
         elif type(fragment) is panflute.Note:
@@ -121,7 +139,9 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.OrderedList:
             self.notImplementedErrorHelper(fragment, "OrderedList")
         elif type(fragment) is panflute.Para:
-            self.notImplementedErrorHelper(fragment, "Para")
+            self.addText("$(br2)")
+            self.addText("\n")
+            self.addText("\n")
         elif type(fragment) is panflute.Plain:
             self.notImplementedErrorHelper(fragment, "Plain")
         elif type(fragment) is panflute.Quoted:
@@ -135,11 +155,11 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.SoftBreak:
             self.notImplementedErrorHelper(fragment, "SoftBreak")
         elif type(fragment) is panflute.Space:
-            self.notImplementedErrorHelper(fragment, "Space")
+            self.addText(" ")
         elif type(fragment) is panflute.Span:
             self.notImplementedErrorHelper(fragment, "Span")
         elif type(fragment) is panflute.Str:
-            self.notImplementedErrorHelper(fragment, "Str")
+            self.addText(fragment.text)
         elif type(fragment) is panflute.Strikeout:
             self.notImplementedErrorHelper(fragment, "StrikeOut")
         elif type(fragment) is panflute.Strong:
@@ -189,6 +209,9 @@ def main():
         
         ast = loader.fromFileToAST(args.source)
         patchouli = transformer.perform(ast)
+        
+        print("Debug output:")
+        print(patchouli)
 
 # bog standard python main guard
 if (__name__ == "__main__"):

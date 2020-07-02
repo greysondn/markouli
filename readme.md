@@ -23,10 +23,10 @@ Including features that are highly unlikely to happen
   * [ ] Patchouli Templates
   * [ ] Some sort of markdown preprocessor
 * [ ] Language Support
-  * [ ] Basic Text
+  * [X] Basic Text
   * [ ] All isomorphic tags
     * [ ] `$(br)` (linebreak)
-    * [ ] `$(br2)` (paragraph break)
+    * [X] `$(br2)` (paragraph break)
     * [ ] `$(li)` (unordered list item)
       * [ ] `$(li2)` to some number (6?) - list item levels.
     * [ ] `$(l)`  (bold)
