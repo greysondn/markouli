@@ -32,8 +32,8 @@ Including features that are highly unlikely to happen
     * [X] `$(l)`  (bold)
     * [X] `$(m)` (strikethrough
     * [X] `$(o)` (italics)
-    * [ ] `$(l:...)...($/l)` (links)
-    * [ ] `$(k:...)` (keyboard buttons, basically.)
+    * [x] `$(l:...)...($/l)` (links)
+    * [x] `$(k:...)` (keyboard buttons, basically.)
   * [ ] Presumably span tags
     * [ ] `$(#RRGGBB)` - colors (span with style?)
     * [ ] `$(#RGB)`    - colors (span with style?)

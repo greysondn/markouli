@@ -36,3 +36,16 @@ Internal entries with anchors: [display](entryid#anchor).
 Web links: [display](https://github.com/greysondn/markouli).
 
 Images come later, naturally.
+
+I also need keyboard keys, if only so I can make jokes about trying to  <kbd>togglePerspective</kbd>  in a text document.
+
+* list
+* items
+  * deeper
+    * deeper
+      * deeper
+        * deeper
+          * deeper
+            * anyone else wonder how deep this goes?
+              * deeper still
+                * okay, I'm stopping now.

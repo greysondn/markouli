@@ -119,7 +119,8 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.LineItem:
             self.notImplementedErrorHelper(fragment, "LineItem")
         elif type(fragment) is panflute.Link:
-            self.notImplementedErrorHelper(fragment, "Link")
+            # links are also elsewhere
+            pass
         elif type(fragment) is panflute.ListItem:
             self.notImplementedErrorHelper(fragment, "ListItem")
         elif type(fragment) is panflute.Math:
@@ -155,7 +156,8 @@ class MarkdownASTTransfomer():
         elif type(fragment) is panflute.RawBlock:
             self.notImplementedErrorHelper(fragment, "RawBlock")
         elif type(fragment) is panflute.RawInline:
-            self.notImplementedErrorHelper(fragment, "RawInline")
+            # I seem to have a long list of things handled elsewhere, non?
+            pass
         elif type(fragment) is panflute.SmallCaps:
             self.notImplementedErrorHelper(fragment, "SmallCaps")
         elif type(fragment) is panflute.SoftBreak:
@@ -236,9 +238,13 @@ class MarkdownASTTransfomer():
                 self.tfString(child, document)
             elif (type(child) == panflute.Emph):
                 self.tfEmph(child, document)
+            elif (type(child) == panflute.Link):
+                self.tfLink(child, document)
             elif (type(child) == panflute.Para):
                 # what?
                 pass
+            elif (type(child) is panflute.RawInline):
+                self.tfRawInline(child, document)
             elif (type(child) == panflute.Space):
                 self.tfSpace(child, document)
             elif (type(child) == panflute.Strong):
@@ -256,9 +262,36 @@ class MarkdownASTTransfomer():
             self.addText("\n")
             self.addText("\n")
     
+    def tfRawInline(self, fragment, document=None):
+        if (fragment.format == "html"):
+            if (fragment.text == "<kbd>"):
+                self.addText("$(k:")
+            elif (fragment.text == "</kbd>"):
+                self.addText(")")
+            else:
+                self.notImplementedErrorHelper(fragment, "tfRawInline:html")
+        else:
+            self.notImplementedErrorHelper(fragment, "tfRawInline")
+    
     def tfLineBreak(self, fragment, document=None):
         self.addText("$(br)")
         self.addText("\n")
+        
+    def tfLink(self, fragment, document=None):
+        # url itself
+        self.addText("$(l:")
+        self.addText(fragment.url)
+        self.addText(")")
+
+        # believe it or not, they're also containers.
+        for child in fragment.content:
+            if   (type(child) == panflute.Str):
+                self.tfString(child, document)
+            else:
+                self.notImplementedErrorHelper(child, "tfLink()")
+
+        # and we need to close that link.
+        self.addText("$(/l)")
     
     def tfSpace(self, fragment, document=None):
         self.addText(" ")
